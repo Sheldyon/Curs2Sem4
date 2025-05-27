@@ -1,0 +1,154 @@
+﻿<Window x:Class="CyberHeaven.Views.AuthWindow"
+         Icon="D:\ООП\CyberHeaven\CyberHeaven\images\icon.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CyberHeaven.Views"
+          xmlns:commands="clr-namespace:CyberHeaven.Commands" 
+          xmlns:controls="clr-namespace:CyberHeaven.Controls" 
+        xmlns:viewmodels="clr-namespace:CyberHeaven.ViewModels" xmlns:converters="clr-namespace:CyberHeaven.Converters"
+        mc:Ignorable="d"
+        Title="AuthWindow" 
+        WindowStyle="None"
+        WindowState="Maximized"
+        AllowsTransparency="True"
+        Background="Transparent">
+    <Window.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="/Resources/Strings.xaml"/>
+        </ResourceDictionary.MergedDictionaries>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:NullToTextConverter x:Key="NullToTextConverter"/>
+        <converters:ThemeToIconConverter x:Key="ThemeToIconConverter"/>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+    </ResourceDictionary>
+
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="commands:CustomCommands.OpenHelp" Executed="OpenHelp_Executed"/>
+        <CommandBinding Command="commands:CustomCommands.RefreshData" Executed="RefreshData_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="commands:CustomCommands.OpenHelp" Key="F1"/>
+        <KeyBinding Command="commands:CustomCommands.RefreshData" Key="R" Modifiers="Control"/>
+    </Window.InputBindings>
+    <!-- Основной контейнер с гифкой на фоне -->
+    <Grid>
+        <!-- Фоновая гифка -->
+        <MediaElement Name="BackgroundGif"
+                      Source="D:\ООП\CyberHeaven\CyberHeaven\images\BackGroundVid.mp4"
+                      LoadedBehavior="Play"
+                      UnloadedBehavior="Stop"
+                      Stretch="UniformToFill"
+                      IsMuted="True"
+                      Opacity="100"/>
+
+        <!-- Затемнение фона -->
+        <Rectangle Fill="#80000000"/>
+
+        <!-- Центральная панель с содержимым -->
+        <Border Background="{DynamicResource BackgroundBrush}"
+                CornerRadius="20" 
+                BorderBrush="{DynamicResource  PrimaryBrush}"
+                BorderThickness="2"
+                Width="400"
+                Height="450"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+            <Grid Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок -->
+                <TextBlock Text="{Binding Localization[AuthorizationTitle]}"
+                           Foreground="{DynamicResource  PrimaryBrush}"
+                           FontSize="28" 
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,20"/>
+
+                <!-- Форма авторизации -->
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <!-- Логин -->
+                    <TextBlock Text="{Binding Localization[UsernameLabel]}"  Foreground="{DynamicResource PrimaryDarkerBrush}" Margin="0,5"/>
+                    <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource AuthTextBoxStyle}"/>
+                    <TextBlock Text="{Binding UsernameError}" Style="{StaticResource ErrorTextStyle}"/>
+
+                    <!-- Пароль -->
+                    <TextBlock Text="{Binding Localization[PasswordLabel]}"  Foreground="{DynamicResource PrimaryDarkerBrush}" Margin="0,5"/>
+                    <controls:PasswordInputControl Password="{Binding Password, Mode=TwoWay}"
+       ShowStrengthIndicator="True"
+       PasswordChanged="PasswordInputControl_PasswordChanged"
+       PasswordStrengthChecked="PasswordInputControl_PasswordStrengthChecked"
+       PasswordVisibilityToggling="PasswordInputControl_PasswordVisibilityToggling"
+       PasswordVisibilityToggled="PasswordInputControl_PasswordVisibilityToggled"/>
+
+                    <!-- Общая ошибка авторизации -->
+                    <TextBlock Text="{Binding AuthError}" 
+                               Style="{StaticResource ErrorTextStyle}"
+                               Visibility="{Binding HasAuthError, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                </StackPanel>
+
+                <!-- Кнопки -->
+                <StackPanel Grid.Row="2" Orientation="Vertical">
+                    <Button Content="{Binding Localization[LoginButton]}"
+                            Command="{Binding LoginCommand}"
+                            Style="{StaticResource AuthButtonStyle}"
+                            Margin="0,0,0,10"/>
+                    <Button Content="{Binding Localization[RegisterPrompt]}"
+                            Command="{Binding NavigateToRegisterCommand}"
+                            Style="{StaticResource RegisterLinkButtonStyle}"/>
+                </StackPanel>
+                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                    <Button Command="{Binding SwitchToRussianCommand}" Style="{StaticResource FlagButtonStyle}">
+                        <Image Source="{StaticResource RussianFlag}" Width="24" Height="16"/>
+                    </Button>
+                    <Button Command="{Binding SwitchToEnglishCommand}" Style="{StaticResource FlagButtonStyle}" Margin="10,0,0,0">
+                        <Image Source="{StaticResource EnglishFlag}" Width="24" Height="16"/>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
+                    <Button Command="{Binding ToggleThemeCommand}" 
+Margin="10,0,0,5"
+ToolTip="{Binding Localization[ToggleThemeTooltip]}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ThemeToggleButtonStyle}">
+                                <Setter Property="Cursor" Value="{DynamicResource DefaultCursor}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <Image Source="{Binding IsDarkTheme, Converter={StaticResource ThemeToIconConverter}}" 
+   Width="24" Height="24"/>
+                    </Button>
+                    
+                </StackPanel>
+                <Button Content="{Binding Localization[HelpButton]}" 
+                Command="commands:CustomCommands.OpenHelp"
+                FontSize="24" 
+                Margin="10,10,700,10" 
+                VerticalAlignment="Bottom" 
+                Width="300"
+                Style="{StaticResource BaseButtonStyle}"/>
+            </Grid>
+
+        </Border>
+        <Button Content="{Binding Localization[MainButton]}" FontSize="24" Margin="10,10,1000,10" VerticalAlignment="Bottom" Width="300"
+                   Style="{StaticResource BaseButtonStyle}" Command="{Binding OpenMainCommand}"/>
+       
+        <Button Content="{Binding Localization[ExitAppButton]}" FontSize="24" Margin="10,10,-1000,10" VerticalAlignment="Bottom" Width="300"
+Style="{StaticResource BaseButtonStyle}" Command="{Binding ExitCommand}"/>
+    </Grid>
+</Window>

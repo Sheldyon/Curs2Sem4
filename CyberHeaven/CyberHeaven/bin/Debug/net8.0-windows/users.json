@@ -1,0 +1,47 @@
+[
+  {
+    "FirstName": "Дарья",
+    "LastName": "Воробьева",
+    "Phone": "System.Windows.Controls.ComboBoxItem: +375 (29) 3667910",
+    "Email": "vdara3214@gmail.com",
+    "Username": "Sheldyon",
+    "Password": "PM227768190d",
+    "Role": "user"
+  },
+  {
+    "FirstName": "Паша",
+    "LastName": "Лобанов",
+    "Phone": "System.Windows.Controls.ComboBoxItem: +375 (25) 3667910",
+    "Email": "vdara@gmail.com",
+    "Username": "52",
+    "Password": "2233445Pm",
+    "Role": "user"
+  },
+  {
+    "FirstName": "ааа",
+    "LastName": "ааааа",
+    "Phone": "+375 (29) 3333333",
+    "Email": "jrhrh@gmail.com",
+    "Username": "djdj",
+    "Password": "djdJ123",
+    "Role": "user"
+  },
+  {
+    "FirstName": "dghh",
+    "LastName": "dfghj",
+    "Phone": "System.Windows.Controls.ComboBoxItem: +375 (29) 4444444",
+    "Email": "vdara@gmail.com",
+    "Username": "wertgh",
+    "Password": "333333Pm",
+    "Role": "user"
+  },
+  {
+    "FirstName": "weryu",
+    "LastName": "weryui",
+    "Phone": "System.Windows.Controls.ComboBoxItem: +375 (33) 2222222",
+    "Email": "fddd@gmail.com",
+    "Username": "345",
+    "Password": "Pm2233",
+    "Role": "user"
+  }
+]

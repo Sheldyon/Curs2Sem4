@@ -1,0 +1,396 @@
+﻿<Window x:Class="CyberHeaven.Views.BronWindow"
+         Icon="D:\ООП\CyberHeaven\CyberHeaven\images\icon.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CyberHeaven.Views" 
+           xmlns:controls="clr-namespace:CyberHeaven.Controls" 
+        xmlns:viewmodels="clr-namespace:CyberHeaven.ViewModels"
+         xmlns:converters="clr-namespace:CyberHeaven.Converters"
+        d:DataContext="{d:DesignInstance Type=viewmodels:BronWindowViewModel}"
+        mc:Ignorable="d"
+        Title="Бронирование"
+        WindowState="Maximized"
+        WindowStyle="None"
+        AllowsTransparency="True">
+
+    <!-- Все ресурсы из MainWindow -->
+        <!-- Стиль для кнопки бронирования -->
+
+        <Window.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/Resources/Strings.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+                <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+                <converters:NullToTextConverter x:Key="NullToTextConverter"/>
+                <converters:ThemeToIconConverter x:Key="ThemeToIconConverter"/>
+                <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <converters:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            
+
+            <!-- Конвертер для цвета текста -->
+                <converters:BlockedPlaceColorConverter x:Key="BlockedPlaceColorConverter"/>
+
+                <!-- Конвертер для подсказки -->
+                <converters:BlockedPlaceTooltipConverter x:Key="BlockedPlaceTooltipConverter"/>
+
+            </ResourceDictionary>
+
+        </Window.Resources>
+
+    <Window.Background>
+        <ImageBrush ImageSource="{DynamicResource MainBackground}" Stretch="UniformToFill"/>
+    </Window.Background>
+
+    <Grid>
+
+        <DockPanel Margin="-2,22,2,-22">
+
+            <DockPanel DockPanel.Dock="Top" Margin="10">
+                <Button DockPanel.Dock="Left" 
+             Command="{Binding OpenAuthCommand}"
+             Style="{StaticResource ProfileButtonStyle}" Height="94" Width="114">
+                    <Image Source="{Binding UserImagePath, 
+                 FallbackValue={StaticResource UserIcon},
+                 TargetNullValue={StaticResource UserIcon}}"
+                Width="70" Height="70"/>
+                  
+                </Button>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" >
+
+
+                    <Button Content="{Binding Localization[MainButton]}" Margin="10"  Style="{StaticResource BaseButtonStyle}" Command="{Binding OpenMainCommand}">
+                     
+                    </Button>
+                    <Button Content="{Binding Localization[SalesButton]}" Margin="10"   Style="{StaticResource BaseButtonStyle}" Command="{Binding OpenSalesCommand}">
+                    
+                    </Button>
+                    <Button Content="{Binding Localization[ReviewButton]}"  Style="{StaticResource BaseButtonStyle}" Command="{Binding OpenReviewCommand}" Margin="10"/>
+
+                </StackPanel>
+            </DockPanel>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <Grid DockPanel.Dock="Top" Height="350">
+                        <!-- Основное изображение -->
+                        <Image Source="{DynamicResource MainHeaderImage}"
+     DockPanel.Dock="Top" Stretch="Uniform"
+     Height="350" Margin="0"/>
+                        <Grid>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock x:Name="CyberText" 
+                    Text="{StaticResource CyberText}"            
+                     Style="{StaticResource LogoTextStyle}"
+                     HorizontalAlignment="Center" IsEnabled="False"/>
+
+                                <TextBlock x:Name="HeavenText"
+                    Text="{StaticResource HeavenText}"
+                     Style="{StaticResource LogoTextStyle}"
+                     HorizontalAlignment="Center"
+                     Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+
+                    <!-- Разделительная линия -->
+                    <Border DockPanel.Dock="Bottom" Height="10" Margin="0" Padding="0,0,0,0"  Background="{DynamicResource DividerGradient}">
+                    </Border>
+                    <StackPanel>
+                        <Grid Margin="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- Карта клуба (по центру) -->
+                        <Image 
+                        Grid.Column="0" 
+                       Source="{DynamicResource MapImage}"
+                           Stretch="Uniform"
+                           Width="600"
+                           HorizontalAlignment="Center"
+                           Margin="200,0,0,20"/>
+
+
+                            <ItemsControl Grid.Column="1" ItemsSource="{Binding PlaceCategories}" HorizontalAlignment="Center">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,20">
+                                            <TextBlock Text="{Binding Name}" 
+                   Foreground="{DynamicResource InputBackgroundBrush}"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
+
+                                            <WrapPanel Orientation="Horizontal" 
+                   HorizontalAlignment="Center"
+                   Margin="0,5">
+                                                <ItemsControl ItemsSource="{Binding Places}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel Orientation="Horizontal"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Button Content="{Binding Name}" 
+                                    Command="{Binding DataContext.SelectPlaceCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}"
+                                    Margin="3"
+                                    Width="60"
+                                    Height="60"
+                                    FontSize="16"
+                                    FontWeight="Bold">
+                                                                <Button.Style>
+                                                                    <Style TargetType="Button" BasedOn="{StaticResource PlaceButtonStyle}">
+                                                                        <Setter Property="Background" Value="Green"/>
+                                                                        <Setter Property="Foreground" Value="White"/>
+                                                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate TargetType="Button">
+                                                                                    <Grid>
+                                                                                        <Border x:Name="ButtonBorder" 
+                                                                    Background="{TemplateBinding Background}"
+                                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                                    CornerRadius="0">
+                                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                                        </Border>
+                                                                                    </Grid>
+                                                                                    <ControlTemplate.Triggers>
+                                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                                            <Setter TargetName="ButtonBorder" Property="CornerRadius" Value="30"/>
+                                                                                        </Trigger>
+                                                                                        <Trigger Property="IsMouseOver" Value="False">
+                                                                                            <Setter TargetName="ButtonBorder" Property="CornerRadius" Value="0"/>
+                                                                                        </Trigger>
+                                                                                    </ControlTemplate.Triggers>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+
+                                                                        <Style.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                                                            </Trigger>
+                                                                            <DataTrigger Binding="{Binding IsBooked}" Value="True">
+                                                                                <Setter Property="Background" Value="LightGray"/>
+                                                                                <Setter Property="Content" Value="ЗАНЯТО"/>
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                                <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsBlocked}" Value="True">
+                                                                                <Setter Property="Background" Value="Red"/>
+                                                                                <Setter Property="Foreground" Value="White"/>
+                                                                                <Setter Property="Content" Value="ЗАБЛОКИРОВАНО"/>
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                                <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Button.Style>
+                                                            </Button>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
+                   Visibility="{Binding AdminPanelVisibility}"
+                    Margin="0,10">
+                            <Button Content="{Binding Localization[BlockPlaceButton]}"
+Command="{Binding TogglePlaceAvailabilityCommand}"
+Style="{StaticResource AdminButtonStyle}"
+Margin="5"/>
+                            <Button Content="{Binding Localization[UnblockPlaceButton]}" 
+Command="{Binding UnblockPlaceCommand}"
+Style="{StaticResource AdminButtonStyle}"
+Margin="5"/>
+                            <Button Content="{Binding Localization[AddPlaceButton]}" 
+                    Command="{Binding AddPlaceCommand}"
+                     CommandParameter="{Binding SelectedPlace}"
+                    Style="{StaticResource AdminButtonStyle}"/>
+                            <Button Content="{Binding Localization[RemovePlaceButton]}" 
+                    Command="{Binding RemovePlaceCommand}"
+                     CommandParameter="{Binding SelectedPlace}"
+                    Style="{StaticResource AdminButtonStyle}"/>
+                            <Button Content="{Binding Localization[SaveChangesButton]}" 
+                    Command="{Binding SavePlacesCommand}"
+                     CommandParameter="{Binding SelectedPlace}"
+                    Style="{StaticResource AdminButtonStyle}"/>
+                        </StackPanel>
+                        <!-- Форма бронирования (внизу) -->
+                        <Border Grid.Column="1" Background="#202020" 
+                            CornerRadius="10"
+                            Padding="20"
+                            Width="800"
+                            HorizontalAlignment="Center"
+                            Margin="0,30,0,20">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                    <Button Content="{Binding PriceSortButtonContent}" 
+        Command="{Binding SortByPriceDescCommand}"
+        Margin="5" Padding="10,5"
+        Style="{StaticResource SortButtonStyle}" 
+        Width="150" Height="40" FontSize="14"  Cursor="{DynamicResource PointerCursor}"/>
+
+                                    <Button Content="{Binding Localization[SortByCategoryButton]}" 
+        Command="{Binding SortByCategoryAscCommand}"
+        Margin="5" Padding="10,5"
+        Style="{StaticResource SortButtonStyle}" 
+        Width="150" Height="40" FontSize="14"  Cursor="{DynamicResource PointerCursor}"/>
+                                </StackPanel>
+
+                                <!-- Выбор категории места -->
+                                <TextBlock Text="{Binding Localization[PlaceCategoryLabel]}" 
+                   Foreground="White"
+                   FontSize="18"/>
+                                <ComboBox ItemsSource="{Binding PlaceCategories}"
+                  SelectedItem="{Binding SelectedCategory}"
+                  DisplayMemberPath="Name"
+                  Margin="0,5,0,15"
+                  FontSize="16"  ItemContainerStyle="{ StaticResource  ComboBoxItemStyle}">
+                                    
+                                </ComboBox>
+
+
+                                <!-- Выбор конкретного места -->
+                                <TextBlock Text="{Binding Localization[SpecificPlaceLabel]}" 
+                                       Foreground="White"
+                                       FontSize="18"/>
+                                <ComboBox ItemsSource="{Binding AvailablePlaces}"
+          SelectedItem="{Binding SelectedPlace}"
+          DisplayMemberPath="Name"
+          Margin="0,5,0,15"
+          FontSize="16"  >
+                                    <ComboBox.ItemContainerStyle >
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="IsEnabled" Value="{Binding true, Converter={StaticResource InverseBooleanConverter}}"/>
+                                            <Setter Property="Foreground" Value="{Binding IsBlocked, Converter={StaticResource BlockedPlaceColorConverter}}"/>
+                                            <Setter Property="ToolTip" Value="{Binding IsBlocked, Converter={StaticResource BlockedPlaceTooltipConverter}}"/>
+                                            <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
+                                <TextBlock Text="{Binding Localization[BookingDateLabel]}" 
+           Foreground="White"
+           FontSize="18"
+           Margin="0,10,0,5"/>
+
+                                <DatePicker SelectedDate="{Binding SelectedDate}"
+                                            Cursor="{DynamicResource PointerCursor}"
+            DisplayDateStart="{Binding DisplayDateStart, Mode=OneWay}"
+            Margin="0,0,0,15"
+            FontSize="16"
+            HorizontalAlignment="Stretch">
+                                    <DatePicker.Resources>
+                                        <Style TargetType="DatePickerTextBox">
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                        </Style>
+                                        <Style TargetType="Calendar">
+                                            <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                        </Style>
+                                        <Style TargetType="Button" x:Key="CalendarButtonStyle">
+                                            <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                                        </Style>
+                                    </DatePicker.Resources>
+                                    
+                                </DatePicker>
+                                <!-- Время бронирования -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding Localization[StartTimeLabel]}" 
+                                               Foreground="White"
+                                               FontSize="18"/>
+                                        <controls:TimeRangeSelector AvailableTimes="{Binding AvailableTimes}"
+                        StartTime="{Binding StartTime, Mode=TwoWay}"
+                        EndTime="{Binding EndTime, Mode=TwoWay}"
+                        MinDuration="01:00:00"
+                        Margin="0,5,0,15"/>
+                                        <TextBlock Text="{Binding TimeError}"
+               Foreground="Red"
+               Visibility="{Binding HasTimeError, Converter={StaticResource BoolToVisibilityConverter}}"
+               TextWrapping="Wrap"
+               Margin="0 5 0 0"/>
+                                    </StackPanel>
+
+                                   
+                                </Grid>
+
+                                <!-- Промокод -->
+                                <TextBlock Text="{Binding Localization[PromoCodeLabel]}" 
+                                       Foreground="White"
+                                       FontSize="18"
+                                           />
+
+                                <PasswordBox x:Name="PromoCodePasswordBox"
+             Margin="0,5,0,15"
+             FontSize="16"
+             PasswordChar="*"
+             PasswordChanged="PromoCodePasswordBox_PasswordChanged"/>
+
+
+                                <!-- Итоговая стоимость -->
+                                <TextBlock Text="{Binding TotalPrice, StringFormat=' {0:N2} BYN.'}"
+                                       Foreground="{DynamicResource PrimaryBrush}"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,10"/>
+
+                                <!-- Кнопка бронирования -->
+                                <Button Content="{Binding Localization[ConfirmBookingButton]}"
+                                    Command="{Binding BookCommand}"
+                                    Style="{StaticResource BookButtonStyle}"
+                                    Margin="0,20"/>
+                            </StackPanel>
+                            
+                        </Border>
+                        
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+                
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Button Command="{Binding SwitchToRussianCommand}" Style="{StaticResource FlagButtonStyle}" Margin="20,0,0,20">
+                <Image Source="{StaticResource RussianFlag}" Width="24" Height="16"/>
+            </Button>
+            <Button Command="{Binding SwitchToEnglishCommand}" Style="{StaticResource FlagButtonStyle}" Margin="20,0,0,20">
+                <Image Source="{StaticResource EnglishFlag}" Width="24" Height="16"/>
+            </Button>
+            <Button Command="{Binding ToggleThemeCommand}" 
+Margin="20,0,0,20"
+ToolTip="{Binding Localization[ToggleThemeTooltip]}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ThemeToggleButtonStyle}">
+                        <Setter Property="Cursor" Value="{DynamicResource DefaultCursor}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="{DynamicResource PointerCursor}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
+                <Image Source="{Binding IsDarkTheme, Converter={StaticResource ThemeToIconConverter}}" 
+   Width="24" Height="24"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

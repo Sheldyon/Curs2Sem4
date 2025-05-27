@@ -1,0 +1,293 @@
+﻿<Window x:Class="CyberHeaven.Views.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         Icon="D:\ООП\CyberHeaven\CyberHeaven\images\icon.ico"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CyberHeaven.Views" 
+        xmlns:converters="clr-namespace:CyberHeaven.Converters"
+        mc:Ignorable="d"
+        Title="Панель администратора" 
+        WindowState="Maximized"
+        WindowStyle="None" 
+        AllowsTransparency="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Strings.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:ThemeToIconConverter x:Key="ThemeToIconConverter"/>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <converters:StatusToBorderBrushConverter x:Key="StatusToBorderBrushConverter"/>
+            <converters:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
+            <converters:StatusToCompleteVisibilityConverter x:Key="StatusToCompleteVisibilityConverter"/>
+            <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+           
+            <!-- Конвертер для видимости кнопки "Отменить" -->
+            <converters:StatusToCancelVisibilityConverter x:Key="StatusToCancelVisibilityConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <!-- Фоновое изображение -->
+        <Image Source="{DynamicResource MainBackground}" Stretch="UniformToFill"/>
+
+        <!-- Основной контент -->
+        <DockPanel>
+            <!-- Верхняя панель с меню -->
+            <DockPanel DockPanel.Dock="Top" Margin="10">
+                <Button DockPanel.Dock="Left" 
+                        Command="{Binding OpenMainCommand}"
+                        Style="{StaticResource ProfileButtonStyle}" Height="94" Width="114">
+                    <Image Source="D:\ООП\CyberHeaven\CyberHeaven\images\admin_icon.png" Width="70" Height="70"/>
+                </Button>
+
+                <TextBlock Text="{Binding Localization[AdminPanelTitle]}"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="{DynamicResource PrimaryBrush}"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Content="{Binding Localization[MainButton]}" FontSize="24" Margin="10"  
+                            Style="{StaticResource BaseButtonStyle}" Command="{Binding OpenMainCommand}"/>
+                    <Button Content="{Binding Localization[LogoutButton]}"  Margin="10"  FontSize="24"
+                            Style="{StaticResource BaseButtonStyle}" Command="{Binding LogoutCommand}"/>
+                    <Button Content="{Binding Localization[ExitAppButton]}" Margin="10"  FontSize="24"
+         Style="{StaticResource BaseButtonStyle}" Command="{Binding ExitCommand}"/>
+                </StackPanel>
+            </DockPanel>
+
+            <!-- Основная область -->
+            <TabControl Margin="20">
+                <TabItem Header="{Binding Localization[BookingRequestsTab]}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Ожидающие заявки -->
+                        <TextBlock Text="{Binding Localization[PendingRequests]}"
+                                   FontSize="16" FontWeight="Bold"
+                                   Margin="10" Foreground="{DynamicResource Text1Brush}"/>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="{DynamicResource PrimaryBrush}">
+                            <ItemsControl ItemsSource="{Binding PendingBookings}" Margin="10">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{DynamicResource TextBrush}" BorderThickness="1" Margin="0,0,0,10" 
+                                                CornerRadius="5" Padding="10"
+                                                Background="{DynamicResource LightBackgroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Place.Name}" FontWeight="Bold" FontSize="14"/>
+                                                <TextBlock Text="{Binding User.Username}" FontStyle="Italic"/>
+                                                <TextBlock Text="{Binding SelectedDate, StringFormat=' {0:dd.MM.yyyy}'}"/>
+                                                <TextBlock>
+                                                    <Run Text="{Binding Localization[Time]}"/>
+                                                    <Run Text="{Binding StartTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                    <Run Text=" - "/>
+                                                    <Run Text="{Binding EndTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding TotalPrice, StringFormat='Сумма: {0} руб.'}"/>
+
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                                    <Button Content="Принять"  Width="100" Margin="0,0,10,0" Foreground="White" FontSize="18"
+                                                            Command="{Binding DataContext.ApproveBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            CommandParameter="{Binding Id}"
+                                                            Style="{StaticResource ApproveButtonStyle}"/>
+                                                    <Button Content="Отклонить" Width="100" Foreground="White" FontSize="18"
+                                                            Command="{Binding DataContext.RejectBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            CommandParameter="{Binding Id}"
+                                                            Style="{StaticResource RejectButtonStyle}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <!-- Активные бронирования -->
+                        <TextBlock Text="{Binding Localization[ActiveBookings]}"
+                                   FontSize="16" FontWeight="Bold"
+                                   Margin="10" Grid.Row="2" Foreground="Black"/>
+
+                        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Background="{DynamicResource PrimaryBrush}">
+                            <ItemsControl ItemsSource="{Binding ActiveBookings}" Margin="10">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{DynamicResource TextBrush}" BorderThickness="1" Margin="0,0,0,10" 
+                                                CornerRadius="5" Padding="10"
+                                                Background="{DynamicResource LightBackgroundBrush}">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Place.Name}" FontWeight="Bold" FontSize="14" Foreground="Black"/>
+                                                <TextBlock Text="{Binding User.Username}" FontStyle="Italic"/>
+                                                <TextBlock Text="{Binding SelectedDate, StringFormat=' {0:dd.MM.yyyy}'}"/>
+                                                <TextBlock>
+                                                    <Run Text="{Binding Localization[Time]}"/>
+                                                    <Run Text="{Binding StartTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                    <Run Text=" - "/>
+                                                    <Run Text="{Binding EndTime, StringFormat={}{0:hh\\:mm}}"/>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding TotalPrice, StringFormat='Сумма: {0} руб.'}"/>
+                                                <TextBlock Text="{Binding Status}" Foreground="{DynamicResource TextBrush}" Margin="0,5,0,0" FontWeight="Bold" Background="{Binding Status, Converter={StaticResource StatusToBorderBrushConverter}}" 
+                                                             HorizontalAlignment="Left" 
+  Width="Auto" 
+  TextAlignment="Center"/>
+
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                                    <Button Content="Завершить" Width="100" Margin="0,0,10,0" Foreground="White" FontSize="18"
+                                Command="{Binding DataContext.CompleteBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding Id}"
+                                Style="{StaticResource CompleteButtonStyle}"
+                                Visibility="{Binding Status, Converter={StaticResource StatusToCompleteVisibilityConverter}}"/>
+
+                                                    <Button Content="Отклонить"  Width="100" Foreground="White" FontSize="18"
+                                Command="{Binding DataContext.CancelBookingCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                CommandParameter="{Binding Id}"
+                                Style="{StaticResource CancelButtonStyle}"
+                                Visibility="{Binding Status, Converter={StaticResource StatusToCancelVisibilityConverter}}"/>
+                                            </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="{Binding Localization[UserManagementTab]}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Список пользователей -->
+                        <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="0,0,1,0" >
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Users}" Margin="10" Cursor="{DynamicResource PointerCursor}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,10" 
+                                                    CornerRadius="5" Padding="10"
+                                                    Background="{Binding IsBlocked, Converter={StaticResource StatusToBorderBrushConverter}}">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Username}" FontWeight="Bold"/>
+                                                    <TextBlock Text="{Binding Email}"/>
+                                                    <TextBlock Text="{Binding IsBlocked, Converter={StaticResource BooleanToTextConverter}, 
+                                                                 ConverterParameter='Заблокирован|Активен'}"
+                                                               FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <Border.InputBindings>
+                                                    <MouseBinding MouseAction="LeftClick" 
+                                                                  Command="{Binding DataContext.SelectUserCommand, 
+                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                  CommandParameter="{Binding}"/>
+                                                </Border.InputBindings>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+
+                        <!-- Детали пользователя -->
+                        <Border Grid.Column="1" Margin="10" Visibility="{Binding SelectedUser, Converter={StaticResource NullToVisibilityConverter}}"  Background="{DynamicResource PrimaryBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel Margin="20">
+                                    <Border  CornerRadius="100" Width="150" Height="150" 
+                    HorizontalAlignment="Center" VerticalAlignment="Top"
+                    Background="{DynamicResource LightBackgroundBrush}">
+                                        <Image Source="{Binding SelectedUser.AvatarPath}" Stretch="UniformToFill">
+                                            <Image.Clip>
+                                                <EllipseGeometry Center="75,75" RadiusX="75" RadiusY="75"/>
+                                            </Image.Clip>
+                                        </Image>
+                                    </Border>
+
+                                    <Button Content="{Binding Localization[ChangeAvatarButton]}" 
+                    Command="{Binding ChangeUserAvatarCommand}"
+                    Style="{StaticResource EditProfileButtonStyle}"
+                    Margin="0,15,0,0"/>
+
+                                    <!-- Режим просмотра -->
+                                    <StackPanel  Margin="0,20,0,0" Visibility="{Binding IsUserEditMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding Localization[UsernameLabel]}" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding SelectedUser.Username}" IsReadOnly="True" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <TextBlock Text="{Binding Localization[EmailLabel]}" Margin="0,10,0,5"/>
+                                        <TextBox Text="{Binding SelectedUser.Email}" IsReadOnly="True" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <TextBlock Text="{Binding Localization[PhoneLabel]}" Margin="0,10,0,5"/>
+                                        <TextBox Text="{Binding SelectedUser.Phone}" IsReadOnly="True" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <TextBlock Text="{Binding Localization[StatusLabel]}" Margin="0,10,0,5"/>
+                                        <TextBox Text="{Binding SelectedUser.IsBlocked, Converter={StaticResource BooleanToTextConverter}, 
+                                   ConverterParameter='Заблокирован|Активен'}" 
+                         IsReadOnly="True" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+                                            <Button Content="{Binding Localization[EditButton]}" FontSize="18"
+                Command="{Binding EditUserCommand}"
+                Style="{StaticResource EditButtonStyle}"
+                Width="140" Margin="0,0,10,0"/>
+
+                                            <Button Content="{Binding SelectedUser.IsBlocked, Converter={StaticResource BooleanToTextConverter}, 
+                                 ConverterParameter='Разблокировать|Заблокировать'}" FontSize="18"
+                Command="{Binding ToggleUserBlockCommand}"
+                Style="{StaticResource BlockButtonStyle}"
+                Width="180"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Режим редактирования -->
+                                    <StackPanel Margin="0,20,0,0" Visibility="{Binding IsUserEditMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding Localization[UsernameLabel]}" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding TempUsername, Mode=TwoWay}" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <TextBlock Text="{Binding Localization[EmailLabel]}" Margin="0,10,0,5"/>
+                                        <TextBox Text="{Binding TempEmail, Mode=TwoWay}" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <TextBlock Text="{Binding Localization[PhoneLabel]}" Margin="0,10,0,5"/>
+                                        <TextBox Text="{Binding TempPhone, Mode=TwoWay}" Style="{StaticResource AuthTextBoxStyle}"/>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+                                            <Button Content="{Binding Localization[SaveButton]}" Width="125" Margin="0,0,10,0" FontSize="24"
+                            Command="{Binding SaveUserChangesCommand}"
+                            Style="{StaticResource SaveButtonStyle}"/>
+
+                                            <Button Content="{Binding Localization[CancelEditButton]}" Width="120" FontSize="24"
+                            Command="{Binding CancelUserEditCommand}"
+                            Style="{StaticResource CancelButtonStyle}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+
+        <!-- Кнопки переключения языка и темы -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Button Command="{Binding SwitchToRussianCommand}" Style="{StaticResource FlagButtonStyle}" Margin="20,0,0,20">
+                <Image Source="{StaticResource RussianFlag}" Width="24" Height="16"/>
+            </Button>
+            <Button Command="{Binding SwitchToEnglishCommand}" Style="{StaticResource FlagButtonStyle}" Margin="20,0,0,20">
+                <Image Source="{StaticResource EnglishFlag}" Width="24" Height="16"/>
+            </Button>
+            <Button Command="{Binding ToggleThemeCommand}" 
+                    Margin="20,0,0,20"
+                    ToolTip="{Binding Localization[ToggleThemeTooltip]}">
+                <Image Source="{Binding IsDarkTheme, Converter={StaticResource ThemeToIconConverter}}" 
+                       Width="24" Height="24"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,111 @@
+[
+  {
+    "Name": "Обычные места (3 руб/час)",
+    "PricePerHour": 3.0,
+    "Places": [
+      {
+        "Name": "A3",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "A4",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "A5",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "A6",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "A7",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "A8",
+        "IsBooked": false,
+        "IsBlocked": false
+      }
+    ]
+  },
+  {
+    "Name": "Места с экраном-невидимкой (3,9 руб/час)",
+    "PricePerHour": 3.9,
+    "Places": [
+      {
+        "Name": "B1",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "B2",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "B3",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "B4",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "B5",
+        "IsBooked": false,
+        "IsBlocked": false
+      }
+    ]
+  },
+  {
+    "Name": "VIP зона (5 руб/час)",
+    "PricePerHour": 5.0,
+    "Places": [
+      {
+        "Name": "V1",
+        "IsBooked": true,
+        "IsBlocked": true
+      },
+      {
+        "Name": "V2",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "V3",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "V4",
+        "IsBooked": false,
+        "IsBlocked": false
+      },
+      {
+        "Name": "V5",
+        "IsBooked": false,
+        "IsBlocked": false
+      }
+    ]
+  },
+  {
+    "Name": "Игровая комната (55 руб/час)",
+    "PricePerHour": 55.0,
+    "Places": [
+      {
+        "Name": "Игровая комната",
+        "IsBooked": true,
+        "IsBlocked": true
+      }
+    ]
+  }
+]
